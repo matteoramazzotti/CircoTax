@@ -1,2 +1,2 @@
 # CircoTax
-A function for the radial representation of differential abundance analyses
+An R function for the radial representation of differential abundance analyses
