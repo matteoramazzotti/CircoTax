@@ -1,4 +1,4 @@
-CircoTax2=function(file,title="CircoTax plot",ramp=c("orange","white","blue"),tax_col=9:14,fc_col=3,sort=c("no","rank","fc","absfc","alpha"),sort_dir="d") {
+CircoTax=function(file,title="CircoTax plot",ramp=c("orange","white","blue"),tax_col=9:14,fc_col=3,sort=c("no","rank","fc","absfc","alpha"),sort_dir="d") {
 	library(ggplot2)
 	if(is.character(file)) {
 		data=read.delim(file,sep="\t")
