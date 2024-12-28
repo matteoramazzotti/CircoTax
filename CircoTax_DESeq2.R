@@ -1,29 +1,31 @@
 CircoTax_DESeq2<- function(input_phyloseq, # REQUIRED
-                             contrast, # REQUIRED
-                             design="", # it is blank purposely (built later if not specified) 
-                             B = 50, # used as BaseMean Threshold in DESeq2 section
-                             W = 10,
-                             H = 7,
-                             p_val = 0.05,
-                             p_adjustment= "BH", # Benj Holch
-                             lfc = 1, # log fold change (DESeq2)
-                             lfc_shrink_method= "none",
-                             COLOR_A = "coral",
-                             COLOR_B = "chartreuse",
-                             format_image = "png",
-                             auto_save= TRUE, # if FALSE then the objects are just returned to the environment
-                             remove_redundants= TRUE,
-                             remove_results="", # to manually discard bad results
-                             tax_out="",
-                             plot_circo= TRUE,
-                             sort_circo = "rank", # it reorders the circoplot (see its functions)
-                             plot_boxplot = TRUE,
-                             sqrt_y_axis = TRUE, # it rescales the y axis in the boxplot
-                             save_path = "",  # then no path will be pasted before the result/plots names by default
-                             auto_log = TRUE
+                           contrast, # REQUIRED
+                           design="", # it is blank purposely (built later if not specified) 
+                           B = 50, # used as BaseMean Threshold in DESeq2 section
+                           W = 10,
+                           H = 7,
+                           p_val = 0.05,
+                           p_adjustment= "BH", # Benj Holch
+                           lfc = 1, # log fold change (DESeq2)
+                           lfc_shrink_method= "none",
+                           COLOR_A = "coral",
+                           COLOR_B = "blue2",
+                           format_image = "png",
+                           auto_save= TRUE, # if FALSE then the objects are just returned to the environment
+                           remove_redundants= TRUE,
+                           remove_results="", # to manually discard bad results
+                           tax_out="",
+                           plot_circo= TRUE,
+                           sort_circo = "rank", # it reorders the circoplot (see its functions)
+                           size_taxon_circo=  3,
+                           plot_boxplot = TRUE,
+                           sqrt_y_axis = TRUE, # it rescales the y axis in the boxplot
+                           
+                           save_path = "",  # then no path will be pasted before the result/plots names by default
+                           auto_log = TRUE
 ) {
   
-  # version: 08/03/2024
+  # version: 17/12/2024  (previous version: 03/2024)
   
   data=input_phyloseq
   contrast=contrast
@@ -133,7 +135,7 @@ CircoTax_DESeq2<- function(input_phyloseq, # REQUIRED
         color="black",
         fontface="bold",
         alpha=0.6,
-        size=3
+        size= size_taxon_circo,
       ) +
       geom_hline( 
         yintercept=1:6,
@@ -193,6 +195,7 @@ CircoTax_DESeq2<- function(input_phyloseq, # REQUIRED
   # tax_out=""
   # plot_circo=TRUE
   # sort_circo = "rank"
+  # size_taxon_circo = 3
   # plot_boxplot=TRUE
   # sqrt_y_axis=TRUE
   # save_path=""
@@ -208,7 +211,7 @@ CircoTax_DESeq2<- function(input_phyloseq, # REQUIRED
     lfc = 1, # log fold change (DESeq2)
     lfc_shrink_method= "none",
     COLOR_A ="coral",
-    COLOR_B = "chartreuse",
+    COLOR_B = "blue2",
     format_image = "png",
     auto_save=TRUE,
     remove_redundants=TRUE,
@@ -216,6 +219,7 @@ CircoTax_DESeq2<- function(input_phyloseq, # REQUIRED
     # tax_out=""  # NB: tax_out is used as a 'stand alone' default and warning, then is disabled from this list
     plot_circo=TRUE,
     sort_circo = "rank", # it reorders the circoplot (see its functions)
+    size_taxon_circo = 3,
     plot_boxplot=TRUE,
     sqrt_y_axis=TRUE , # it rescales the y axis in the boxplot
     save_path="",  # then no path will be pasted before the result/plots names
@@ -233,7 +237,7 @@ CircoTax_DESeq2<- function(input_phyloseq, # REQUIRED
     lfc = "\n * The argument lfc (log fold change threshold) has been set as 'lfc=1' by default",
     lfc_shrink_method= "\n * The argument lfc_shrink_method (shrinkage method of lfc) has been set as 'none' by default\n(the possible alternatives are 'apeglm' and 'ashr')",
     COLOR_A = "\n * The color of the second level has been set as COLOR_A='coral' by default",
-    COLOR_B ="\n * The color of the reference level has been set as COLOR_B='chartreuse' by default",
+    COLOR_B ="\n * The color of the reference level has been set as COLOR_B='blue2' by default",
     format_image = "\n * The argument format_image (image output) has been set as 'format_image='png'' by default\n(the possible choices are 'png' and 'pdf')",
     auto_save ="\n * The argument auto_save (automatic saving of the results) has been set as 'auto_save=TRUE' by default\n(set auto_save==FALSE to get the resulting objects in your environment)",
     remove_redundants ="\n * The argument remove_redundants (automatic removal of redundant results) has been set as 'remove_redundants=TRUE' by default\n(To disable it set 'remove_redundants=FALSE' )",
@@ -241,10 +245,11 @@ CircoTax_DESeq2<- function(input_phyloseq, # REQUIRED
     # tax_out=""  # NB: tax_out is used as a 'stand alone' default and warning, then is disabled from this list
     plot_circo = "\n * The argument plot_circo (plotting through CircoTax plot) has been set as 'plot_circo=TRUE' by default",
     sort_circo = "\n * The argument sort_circo (sorting of the CircoPlot elements) has been set as 'sort_circo='rank'' by default\n(The possibile options are 'no' 'rank' 'fc' 'absfc' 'alpha') ",
+    size_taxon_circo = "\n * The argument size_taxon_circo (size of the taxon name) has been set as '3' by default",
     plot_boxplot= "\n * The argument plot_boxplot (plotting through boxplot) has been set as 'plot_boxplot=TRUE' by default",
     sqrt_y_axis= "\n * To allow the view of lower abundances, the y axis ticks in the boxplot follows a sqrt scale\n(To disable it add 'sqrt_y_axis=FALSE' to the function call) ",
     save_path="\n * The current working directory has been used as output path\n(to specify other paths add a string to 'save_path=' argument in the function call, e.g. 'save_path=folder_name/' )",
-    auto_log="\n * To disable the display of this guide set 'auto_log=FALSE' "
+    auto_log="\n * To disable the display of this guide after every analysis set 'auto_log=FALSE' "
   )
   
   Log_text<- "\n*** Analysis concluded! *** \n" # this will be always be printed at the end regardless 
