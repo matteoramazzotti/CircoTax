@@ -1,6 +1,6 @@
 # CircoTax
 CircoTax is an R function for that exploits the radial capabilities of ggplot2 for the representation of differential abundance analyses on microbiota data.
-The function can loaad data both from a data.frame (see CircoTax_input_example.txt) or can receive data directly from the two R funtions
+The function can load data both from an R data.frame (see example_data.txt) or can receive data directly from the two R functions
 - CircoTax_DESeq2.R
 - CircoTax_ALDEx2.R
 
