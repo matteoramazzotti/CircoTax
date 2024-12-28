@@ -4,9 +4,10 @@ CircoTax_custom=function(file,
                           ramp=c("orange","white","blue"),
                           names=1,
                           tax_col=2,
+                          size_taxon_circo=3,
                           fc_col=3) {
   
-  # version: 08/03/2024
+  # version: 17/12/2024  (previous version: 03/2024)
   
   data=file
   
@@ -48,7 +49,7 @@ CircoTax_custom=function(file,
       color="black",
       fontface="bold",
       alpha=0.6,
-      size=3
+      size= size_taxon_circo ,
     ) +
     geom_hline( 
       yintercept=1:length(ranks_names),
