@@ -7,4 +7,5 @@ The CircoTax_tutorial_AutoDA.R contains an explained working script using CircoT
 CircoTax can load data from an R data.frame (see example_data.txt) or can receive input directly from two R functions
 - CircoTax_DESeq2.R
 - CircoTax_ALDEx2.R
+  
 that implement a differential abundance analysis (with two differnt R packages, namely DESeq2 and ALDEx2) from the data.RData file and automatically create the CircoTax plot.
