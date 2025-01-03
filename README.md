@@ -13,4 +13,4 @@ Specific flavors of CircoTax has been developed to facilitate its usage:
   
 The latter two functions implement a differential abundance analysis (with two differnt R packages, namely DESeq2 and ALDEx2) and automatically create the CircoTax plot.
 
-The file CircoTax_tutorial_AutoDA.R contains an explained working script on how to set up the diferential abundance analyses implemneted in CircoTax.
+The file CircoTax_tutorial_AutoDA.R contains an explained working script on how to set up the diferential abundance analyses implemented in CircoTax.
