@@ -1,0 +1,5 @@
+This folder contains the two CircoTax tutorials, a pdf and a R script, along with the files required to run them.
+
+The pdf introduces the main and the ancillary functions of CircoTax, showing the characteristics, listing required dipendencies and giving graphical examples of the obtainable outcomes.
+
+The R script shows a complete workflow of the ancillary auto_DA functions versatility since the loading of a raw phyloseq object ("data.R", obtained from the processing of https://doi.org/10.1186/s13293-023-00523-w).
