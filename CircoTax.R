@@ -1,25 +1,24 @@
-CircoTax=function(file,
+CircoTax=function(input_table,
                   title="CircoTax plot",
                   fill_text="fold change",
                   ramp=c("orange","white","blue"),
-                  tax_col=2:length(colnames(file)),
+                  tax_col=2:length(colnames(input_table)),
                   fc_col=1,
                   size_taxon_circo=3,
                   sort=c("no","rank","fc","absfc","alpha"),
-                  sort_dir="d") {
+                  sort_dir="d" 
+                  ) {
   
-  # version: 17/12/2024  (previous version: 03/2024)
+  # version: 16/06/2025  (previous version: 17/12/2024)
   
-  
-  data=file
   
   library("ggplot2")
   library("ggh4x")
   
   sort_dir=ifelse(sort_dir == "d",FALSE,TRUE)
   
-  if( "Domain" %in% colnames(file) | "Kingdom" %in% colnames(file) ){
-    file <- gsub("Kingdom","Domain",colnames(file))
+  if( "Domain" %in% colnames(input_table) | "Kingdom" %in% colnames(input_table) ){
+    file <- gsub("Kingdom","Domain",colnames(input_table))
     if(length(tax_col) == 5) {
       gplot_labels= unlist(strsplit("DPCOF",""))
     }
@@ -36,62 +35,63 @@ CircoTax=function(file,
     if(length(tax_col) == 6) { #PCOFGS
       gplot_labels= unlist(strsplit("PCOFGS",""))
     }
+    # gplot_labels <<- gplot_labels
   }
     
   #build the taxa-related variables (tax index and label)
   #ranks are assumed to be in decreasing order from kinkdom(domain) to species
   #y represent the height (from the center of the circle) of the bars => domain=1 (min) species=7 (max)
-  y=apply(data,1,function(x) length(tax_col)-sum(ifelse(is.na(x[tax_col]),1,0)))
+  y=apply(input_table,1,function(x) length(tax_col)-sum(ifelse(is.na(x[tax_col]),1,0)))
   if(sort[1] == "no") {
-    #y=apply(data,1,function(x) length(tax_col)-sum(ifelse(is.na(x[tax_col]),1,0)))
-    synth=apply(data[,tax_col],1,function(x) paste0(x,collapse="-"))
+    #y=apply(input_table,1,function(x) length(tax_col)-sum(ifelse(is.na(x[tax_col]),1,0)))
+    synth=apply(input_table[,tax_col],1,function(x) paste0(x,collapse="-"))
     labels=unlist(lapply(strsplit(gsub("-NA.*","",perl=T,synth),"-"),function(x) rev(x)[1]))
     y=y
-    fc=data[,fc_col]
+    fc=input_table[,fc_col]
   }
   if(sort[1] == "rank") {
-    #y=apply(data,1,function(x) length(tax_col)-sum(ifelse(is.na(x[tax_col]),1,0)))
+    #y=apply(input_table,1,function(x) length(tax_col)-sum(ifelse(is.na(x[tax_col]),1,0)))
     o=order(y,decreasing=sort_dir)
-    synth=apply(data[o,tax_col],1,function(x) paste0(x,collapse="-"))
+    synth=apply(input_table[o,tax_col],1,function(x) paste0(x,collapse="-"))
     labels=unlist(lapply(strsplit(gsub("-NA.*","",perl=T,synth),"-"),function(x) rev(x)[1]))
     y=y[o]
-    fc=data[o,fc_col]
+    fc=input_table[o,fc_col]
   }
   if(sort[1] == "alphalin") {
-    synth=apply(data[,tax_col],1,function(x) paste0(x,collapse="-"))
+    synth=apply(input_table[,tax_col],1,function(x) paste0(x,collapse="-"))
     o=order(synth,decreasing=sort_dir)
     synth=synth[o]
     labels=unlist(lapply(strsplit(gsub("-NA.*","",perl=T,synth),"-"),function(x) rev(x)[1]))
     y=y[o]
-    fc=data[o,fc_col]
+    fc=input_table[o,fc_col]
   }
   if(sort[1] == "alpha") {
-    synth=apply(data[,tax_col],1,function(x) paste0(x,collapse="-"))
+    synth=apply(input_table[,tax_col],1,function(x) paste0(x,collapse="-"))
     labels=unlist(lapply(strsplit(gsub("-NA.*","",perl=T,synth),"-"),function(x) rev(x)[1]))
     o=order(labels)
     labels=labels[o]
     y=y[o]
-    fc=data[o,fc_col]
+    fc=input_table[o,fc_col]
   }
   if(sort[1] == "fc") {
-    o=order(data[,fc_col],decreasing=sort_dir)
-    synth=apply(data[,tax_col],1,function(x) paste0(x,collapse="-"))
+    o=order(input_table[,fc_col],decreasing=sort_dir)
+    synth=apply(input_table[,tax_col],1,function(x) paste0(x,collapse="-"))
     synth=synth[o]
     labels=unlist(lapply(strsplit(gsub("-NA.*","",perl=T,synth),"-"),function(x) rev(x)[1]))
     y=y[o]
-    fc=data[o,fc_col]
+    fc=input_table[o,fc_col]
   }
   if(sort[1] == "absfc") {
-    #y=apply(data,1,function(x) length(tax_col)-sum(ifelse(is.na(x[tax_col]),1,0)))
-    o=order(abs(data[,fc_col]),decreasing=sort_dir)
-    synth=apply(data[o,tax_col],1,function(x) paste0(x,collapse="-"))
-    synth=synth[order(abs(data[,fc_col]),decreasing=sort_dir)]
+    #y=apply(input_table,1,function(x) length(tax_col)-sum(ifelse(is.na(x[tax_col]),1,0)))
+    o=order(abs(input_table[,fc_col]),decreasing=sort_dir)
+    synth=apply(input_table[o,tax_col],1,function(x) paste0(x,collapse="-"))
+    synth=synth[order(abs(input_table[,fc_col]),decreasing=sort_dir)]
     labels=unlist(lapply(strsplit(gsub("-NA.*","",perl=T,synth),"-"),function(x) rev(x)[1]))
-    fc=data[o,fc_col]
+    fc=input_table[o,fc_col]
   }
   
   #builds the data.frame for ggplot2 
-  df=data.frame("id"=1:dim(data)[1],"name"=labels,"rank"=y,"FC"=fc)
+  df=data.frame("id"=1:dim(input_table)[1],"name"=labels,"rank"=y,"FC"=fc)
   
   #the plot starts here
   ggplot(df, aes(x = id, y = rank)) +

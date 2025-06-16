@@ -1,4 +1,4 @@
-CircoTax_custom=function(file,
+CircoTax_custom=function(input_table,
                           title="CircoTax plot",
                           fill_text="fold change",
                           ramp=c("orange","white","blue"),
@@ -7,22 +7,21 @@ CircoTax_custom=function(file,
                           size_taxon_circo=3,
                           fc_col=3) {
   
-  # version: 17/12/2024  (previous version: 03/2024)
+  # version: 16/06/2025  (previous version: 17/12/2024)
   
-  data=file
-  
+
   library("ggplot2")
   library("ggh4x")
   
-  circular_names<- factor( data[,names] , unique(data[,names]) )
-  ranks_names<- unique(data[,tax_col])
-  ranks_ordered <- factor( data[,tax_col], ranks_names )
+  circular_names<- factor( input_table[,names] , unique(input_table[,names]) )
+  ranks_names<- unique(input_table[,tax_col])
+  ranks_ordered <- factor( input_table[,tax_col], ranks_names )
   ranks_numeric <- as.integer(ranks_ordered)
   
-  number_point <- gsub(",",".",data[, fc_col])
+  number_point <- gsub(",",".",input_table[, fc_col])
   fc= as.numeric(number_point)
   
-    #builds the data.frame for ggplot2 
+  #builds the data.frame for ggplot2 
   df=data.frame("id"=circular_names, "y_names"=ranks_ordered,"rank"= ranks_numeric, "FC"=fc)
   
   #the plot starts here
