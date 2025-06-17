@@ -32,7 +32,7 @@ To install all the required dependencies from an R prompt:
 ```
 
 > [!NOTE]  
-> Not all of the above dependencies are strictly required to run CircoTax, please refer to the Documentation for additional details.
+> Not all of the above dependencies are strictly required to run CircoTax, please refer to the [Wiki](https://github.com/matteoramazzotti/CircoTax/wiki/Usage#installation) for additional details.
 
 ### How to plot a CircoTax using a complete taxonomy matrix
 
@@ -66,15 +66,8 @@ CircoTax can take a complete taxonomy matrix as an input, here we provide a subs
 |       -3.204       |  Bacteria  |       Proteobacteria      | Gammaproteobacteria |   Pasteurellales  |   Pasteurellaceae  |   Haemophilus   |
 |       -3.242       |  Bacteria  |       Proteobacteria      | Gammaproteobacteria |   Pasteurellales  |   Pasteurellaceae  | Aggregatibacter |
 
-Moreover, the following arguments can be specified:
-
-- **title**: Title to display on the top of the plot.
-- **fill_text**: Text to display above the color legend.
-- **fc_col**: Column index of the input table containing the fold change values (an as.numeric column) to display through the gradient of the column. By default, the fold change values are searched in the first column of the input matrix.
-- **tax_col**: Column indexes of the input table containing the full taxonomic path of each result. By default, the column indexes range from the second column to the last column. The function will automatically infer the presence or absence of certain taxonomic levels according to the number of columns.
-- **sort**: Sorting logic of the results in the CircoTax. The possible inputs are "rank" (by taxonomic rank), "fc" (by fold change), "absfc" (by absolute fold change) and "alpha" (alphabetic order).
-- **ramp**: Gradient of colors corresponding to fold change values range. Its input has to be a three character vector, where each character is a R color name. Defaults to c("blue","white","orange").
-- **size_taxon_circo**: Size of the taxa labels (default=3).
+> [!NOTE]  
+> The function *CircoTax()* can also take optional arguments. More information regarding this can be found in the [Wiki](https://github.com/matteoramazzotti/CircoTax/wiki/Usage#circoTax).
 
 ### How to plot a CircoTax using a custom data frame
 
@@ -108,7 +101,7 @@ An input example is included in the file *example_custom.txt*, which was used fo
 
 
 > [!NOTE]  
-> The function *CircoTax_custom()* can also take optional arguments. More information regarding this can be found in the Documentation.
+> The function *CircoTax_custom()* can also take optional arguments. More information regarding this can be found in the [Wiki](https://github.com/matteoramazzotti/CircoTax/wiki/Usage#circoTax_custom).
 
 
 ### How to plot a CircoTax using Auto DA functions
@@ -131,4 +124,4 @@ The above code is performed taking a *phyloseq* object named *data.RData* obtain
 </p>
 
 > [!NOTE]  
-> Functions *CircoTax_DESeq2()* and *CircoTax_ALDEx2()* accepts additional arguments to customise the analysis. More information regarding this can be found in the Documentation.
+> Functions *CircoTax_DESeq2()* and *CircoTax_ALDEx2()* accepts additional arguments to customise the analysis. More information regarding this can be found in the [Wiki](https://github.com/matteoramazzotti/CircoTax/wiki/Usage#circotax_deseq2-and-circotax_aldex2).
