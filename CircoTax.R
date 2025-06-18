@@ -82,11 +82,10 @@ CircoTax=function(input_table,
     fc=input_table[o,fc_col]
   }
   if(sort[1] == "absfc") {
-    #y=apply(input_table,1,function(x) length(tax_col)-sum(ifelse(is.na(x[tax_col]),1,0)))
     o=order(abs(input_table[,fc_col]),decreasing=sort_dir)
     synth=apply(input_table[o,tax_col],1,function(x) paste0(x,collapse="-"))
-    synth=synth[order(abs(input_table[,fc_col]),decreasing=sort_dir)]
     labels=unlist(lapply(strsplit(gsub("-NA.*","",perl=T,synth),"-"),function(x) rev(x)[1]))
+    y=y[o]
     fc=input_table[o,fc_col]
   }
   
