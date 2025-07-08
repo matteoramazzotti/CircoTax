@@ -1,0 +1,26 @@
+Package: circotax
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person("Leandro", "Di Gloria", email = "", role = c("aut", "cre"))
+    person("Lorenzo", "Casbarra", email = "", role = c("aut", "cre"))
+    person("Matteo", "Ramazzotti", email = "matteo.ramazzotti@unifi.it", role = c("aut", "cre", "cph"))
+Description: CircoTax is an R function implementing a specialized ggplot2 graph to represent in a radial form a rank-aware collection of differentially abundant taxa.
+License: use_gpl3_license()
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports:
+    ALDEx2 (>= 1.38.0),
+    DESeq2 (>= 1.46.0),
+    phyloseq (>= 1.50.0),
+    ggh4x (>= 0.3.1),
+    stringi (>= 1.8.4),
+    ggplot2 (>= 3.5.2),
+    apeglm,
+    ashr,
+    stats,
+    grid
+Depends: 
+    R (>= 3.5)
+LazyData: true
