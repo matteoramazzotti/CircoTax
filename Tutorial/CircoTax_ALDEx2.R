@@ -468,14 +468,14 @@ CircoTax_ALDEx2<- function(input_phyloseq, # REQUIRED
     
     
     # Automatically searching the key columns in this dataframe ...
-    column_with_Pval<- colnames(aldx_final) [ grepl(contrast[[1]],colnames(aldx_final)) &
-                                                grepl(contrast[[3]],colnames(aldx_final)) &
-                                                grepl("pval",colnames(aldx_final)) &
-                                                !  grepl("adj",colnames(aldx_final)) ]
-    column_with_eff_size<- colnames(aldx_final) [ grepl(contrast[[1]],colnames(aldx_final)) &
-                                                    grepl(contrast[[3]],colnames(aldx_final)) &
-                                                    grepl("effect$",colnames(aldx_final)) ]   # the dollar avoid to select the low and high CI column of the eff size
+    search_contrast <- grepl(contrast[[2]],colnames(aldx_final))| grepl(contrast[[3]],colnames(aldx_final))
+    search_factor <- grepl(contrast[[1]],colnames(aldx_final))
+    search_pval_column <- grepl("pval",colnames(aldx_final)) & !grepl("adj",colnames(aldx_final))
+    search_eff_column <- grepl("effect$",colnames(aldx_final))    # the symbol avoids the selection of the low and high CI columns with the eff size
     
+    column_with_Pval<- colnames(aldx_final) [ search_factor & search_contrast & search_pval_column  ]
+    column_with_eff_size<- colnames(aldx_final) [ search_factor & search_contrast & search_eff_column  ]
+        
     
     resulted_p_val<-aldx_final[[column_with_Pval]]
     p_adj<-p.adjust(resulted_p_val, method= p_adjustment )
