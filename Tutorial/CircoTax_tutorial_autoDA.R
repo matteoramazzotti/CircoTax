@@ -12,7 +12,7 @@ library("DESeq2")
 library("ggplot2")
 library("ggh4x")
 
-source("../CircoTax_DESeq2.R")  # loads the function "CircoTax_DESeq2", or...
+source("./CircoTax_DESeq2.R")  # loads the function "CircoTax_DESeq2", or...
 #source("../CircoTax_ALDEx2.R") # loads the function "CircoTax_ALDEx2"
 # NB: this tutorial assumes that your current working directory is the "Tutorial" folder downloaded from GitHub while the auto_DA functions are in its parent directory (as in CircoTax's GitHub repository)
 
