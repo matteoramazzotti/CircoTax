@@ -1,0 +1,11 @@
+Tax_name	Rank_name	FC
+Gammaproteobacteria	Class	1.06736
+Tannerellaceae	Family	2.398398
+Marinifilaceae	Family	3.136581
+Sutterellaceae	Family	3.808097
+Lactobacillaceae	Family	3.624271
+Capnocytophaga	Genus	-5.55057
+Alloprevotella	Genus	3.172175
+Muribaculaceae	Genus	10
+Butyricimonas	Genus	4.38531
+Clostridia	Genus	4.235196
