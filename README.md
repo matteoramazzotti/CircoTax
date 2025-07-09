@@ -4,7 +4,7 @@ A basic Quickstart guide is provided here, please refer to the Documentation for
 
 <p align="center">
 	<img src="docs/img/CircoTax_plot_default.png" width="49%"  title="CircoTax Plot obtained from a complete taxonomy matrix.">
-	<img src="docs/img/CircoRax_plot_custom.png" width="49%"  title="CircoTax Plot obtained from a custom R data.frame composed of three columns, namely taxon name, taxonomic rank name and value to display (e.g. FC).">
+	<img src="docs/img/CircoTax_plot_custom.png" width="49%"  title="CircoTax Plot obtained from a custom R data.frame composed of three columns, namely taxon name, taxonomic rank name and value to display (e.g. FC).">
 </p>
 
 ## Quickstart
@@ -74,7 +74,7 @@ The *CircoTax()* function allows to obtain a plot from an R data.frame composed 
 ```
 
 <p align="center">
-	<img src="docs/img/CircoRax_plot_custom.png" width="49%"  title="CircoTax Plot obtained from a custom R data.frame composed of three columns, namely taxon name, taxonomic rank name and value to display (e.g. FC).">
+	<img src="docs/img/CircoTax_plot_custom.png" width="49%"  title="CircoTax Plot obtained from a custom R data.frame composed of three columns, namely taxon name, taxonomic rank name and value to display (e.g. FC).">
 </p>
 
 An input example is included in the file [*circotax_example_2*](https://raw.githubusercontent.com/matteoramazzotti/CircoTax/refs/heads/main/inst/extdata/circotax_example_2.txt), which was used for the above CircoTax plot:
