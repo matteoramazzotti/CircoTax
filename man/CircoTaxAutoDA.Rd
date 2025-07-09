@@ -26,7 +26,7 @@ CircoTaxAutoDA(
 
 \item{contrast}{Vector of three characters which are (in this order) the names of the factor of interest and two of its levels of which report the differences. e.g. c("SEX","M","F")}
 
-\item{design}{String describing statistical design (within the limits of DESeq2 or ALDEx2) on which the analysis is conducted. e.g. '~ Gender+Condition}
+\item{design}{String describing statistical design (within the limits of DESeq2 or ALDEx2) on which the analysis is conducted. e.g. '~ Gender+Condition'. Default: NULL}
 
 \item{tax_out}{Vector whose characters are the taxonomic level to remove. Default: c()}
 
