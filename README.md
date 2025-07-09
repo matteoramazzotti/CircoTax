@@ -11,35 +11,30 @@ A basic Quickstart guide is provided here, please refer to the Documentation for
 
 Specific flavors of CircoTax has been developed to facilitate its usage:
 
-- ***CircoTax()*** is the basic function to plot a complete *phyloseq* taxonomy matrix.
+- ***CircoTax()*** is the basic function to plot a complete *phyloseq* taxonomy matrix or even custom data frames.
 
-- ***CircoTax_custom()*** is a simpler version to plot custom data frames.
-
-- ***CircoTax_DESeq2()*** and ***CircoTax_ALDEx2()*** implement a differential abundance analysis with the *DESeq2* and *ALDEx2* R packages respectively. 
+- ***CircoTaxAutoDA()*** implement a differential abundance analysis using either the *DESeq2* or *ALDEx2* R packages. 
   
 
 ### How to install
 
-To install all the required dependencies from an R prompt:
-```
-	if (!require("BiocManager", quietly = TRUE))
-			install.packages("BiocManager")
+To install with *devtools* :
 
-	install.packages(c("ggh4x","ggplot2","ashr"))
-	BiocManager::install("phyloseq")
-	BiocManager::install("ALDEx2")
-	BiocManager::install("apeglm")
 ```
-
+	library("devtools")
+	install_github("matteoramazzotti/CircoTax")
+```
 > [!NOTE]  
-> Not all of the above dependencies are strictly required to run CircoTax, please refer to the [Wiki](https://github.com/matteoramazzotti/CircoTax/wiki/Usage#installation) for additional details.
+> Required dependencies should be installed automatically. In case of errors, please refer to the [Wiki](https://github.com/matteoramazzotti/CircoTax/wiki/Usage#installation).
+
 
 ### How to plot a CircoTax using a complete taxonomy matrix
 
 ```
-	source("CircoTax.R")
-	data=read.delim("Tutorial/example_complete.txt",sep="\t")
-	CircoTax(data)
+	library("circotax")
+	file_format_1 <- system.file("extdata", "circotax_example_1.txt", package = "circotax")
+	data = read.delim(file_format_1, sep = "\t")
+	CircoTax(data, tax_col = 2:7, fc_col = 1)
 ```
 
 <p align="center">
@@ -49,7 +44,7 @@ To install all the required dependencies from an R prompt:
 
 In this example the CircoTax plot is representing 62 differentially abundant ranks, among which 27 are at genus level resolution, 18 at family level resolution, 10 at order level resolution, 3 at the class level resolution and 4 at phylum level resolution.
 
-CircoTax can take a complete taxonomy matrix as an input, here we provide a subset from our tutorial dataset *example_complete.txt*:
+CircoTax can take a complete taxonomy matrix as an input, here we provide a subset from our tutorial dataset [*circotax_example_1*](https://raw.githubusercontent.com/matteoramazzotti/CircoTax/refs/heads/main/inst/extdata/circotax_example_1.txt):
 
 
 | **log2FoldChange** | **Domain** |         **Phylum**        |      **Class**      |     **Order**     |     **Family**     |    **Genus**    |
@@ -66,24 +61,23 @@ CircoTax can take a complete taxonomy matrix as an input, here we provide a subs
 |       -3.204       |  Bacteria  |       Proteobacteria      | Gammaproteobacteria |   Pasteurellales  |   Pasteurellaceae  |   Haemophilus   |
 |       -3.242       |  Bacteria  |       Proteobacteria      | Gammaproteobacteria |   Pasteurellales  |   Pasteurellaceae  | Aggregatibacter |
 
-> [!NOTE]  
-> The function *CircoTax()* can also take optional arguments. More information regarding this can be found in the [Wiki](https://github.com/matteoramazzotti/CircoTax/wiki/Usage#circoTax).
 
 ### How to plot a CircoTax using a custom data frame
 
-The "CircoTax_custom" function allows to plot a CircoTax from an R data.frame composed of three columns, namely taxon name, taxonomic rank name and value to display (e.g. FC).
+The *CircoTax()* function allows to obtain a plot from an R data.frame composed of three columns, namely taxon name, taxonomic rank name and value to display (e.g. FC).
 
 ```
-	source("CircoTax_custom.R")
-	data=read.delim("Tutorial/example_custom.txt",sep="\t")
-	CircoTax_custom(data)
+	library("circotax")
+	file_format_2 <- system.file("extdata", "circotax_example_2.txt", package = "circotax")
+	data = read.delim(file_format_2, sep = "\t")
+	CircoTax(data, names = 1, tax_col = 2, fc_col = 3)
 ```
 
 <p align="center">
 	<img src="docs/img/CircoRax_plot_custom.png" width="49%"  title="CircoTax Plot obtained from a custom R data.frame composed of three columns, namely taxon name, taxonomic rank name and value to display (e.g. FC).">
 </p>
 
-An input example is included in the file *example_custom.txt*, which was used for the above CircoTax plot:
+An input example is included in the file [*circotax_example_2*](https://raw.githubusercontent.com/matteoramazzotti/CircoTax/refs/heads/main/inst/extdata/circotax_example_2.txt), which was used for the above CircoTax plot:
 
 |     **Tax_name**    | **Rank_name** |  **FC**  |
 |:-------------------:|:-------------:|:--------:|
@@ -101,27 +95,28 @@ An input example is included in the file *example_custom.txt*, which was used fo
 
 
 > [!NOTE]  
-> The function *CircoTax_custom()* can also take optional arguments. More information regarding this can be found in the [Wiki](https://github.com/matteoramazzotti/CircoTax/wiki/Usage#circoTax_custom).
+> The function *CircoTax()* can also take optional arguments. More information regarding this can be found in the [Wiki](https://github.com/matteoramazzotti/CircoTax/wiki/Usage#circoTax).
 
 
 ### How to plot a CircoTax using Auto DA functions
 
-***CircoTax_DESeq2()*** and ***CircoTax_ALDEx2()*** perform the differential analysis at each taxonomic level between two groups using either *DESeq2* or *ALDEx2*. They then filter the significant results and finally generate a tsv table, a box plot of percent abundances and a CircoTax plot of the results.
+***CircoTaxAutoDA()*** perform the differential analysis at each taxonomic level between two groups using either *DESeq2* or *ALDEx2*. It then filters the significant results and finally generate a tsv table, a box plot of percent abundances and a CircoTax plot of the results.
 
 ```
-	source("CircoTax_DESeq2.R")
+	library("circotax")
+	library("phyloseq")
 
-	load("Tutorial/data.RData")
-	data_to_analyse <- subset_samples(data, DISEASE=="H")
-	CircoTax_DESeq2(data_to_analyse, contrast = c("SEX","M","F"))
+	data <- subset_samples(circotax::circotax_phyloseq_example, DISEASE == "H")
+	df = CircoTaxAutoDA(data, mode = "DESeq2", contrast = c("SEX","M","F"))
+	CircoTax(df) 
 ```
 
-The above code is performed taking a *phyloseq* object named *data.RData* obtained by [*Elena Niccolai et al.*](https://doi.org/10.1186/s13293-023-00523-w) and results in the following CircoTax plot and boxplot:
+The above code is performed taking a *phyloseq* object named *circotax_phyloseq_example* which is bundled with our library and obtained by [*Elena Niccolai et al.*](https://doi.org/10.1186/s13293-023-00523-w) and results in the following CircoTax plot:
 
 <p align="center">
-	<img src="docs/img/CircoTax_plot_DESeq2.png" width="49%"  title="CircoTax Plot obtained using CircoTax_DESeq2()">
-	<img src="docs/img/DESeq2_Boxplot.png" width="49%" title="CircoTax BoxPlot obtained using CircoTax_DESeq2()">
+	<img src="docs/img/CircoTax_plot_DESeq2.png" width="49%"  title='CircoTax Plot obtained using CircoTaxAutoDA(data, mode = "DESeq2", contrast = c("SEX","M","F"))'>
+	<!-- <img src="docs/img/DESeq2_Boxplot.png" width="49%" title="CircoTax BoxPlot obtained using CircoTax_DESeq2()"> -->
 </p>
 
 > [!NOTE]  
-> Functions *CircoTax_DESeq2()* and *CircoTax_ALDEx2()* accepts additional arguments to customise the analysis. More information regarding this can be found in the [Wiki](https://github.com/matteoramazzotti/CircoTax/wiki/Usage#circotax_deseq2-and-circotax_aldex2).
+> Functions *CircoTaxAutoDA()* accepts additional arguments to customise the analysis. More information regarding this can be found in the [Wiki](https://github.com/matteoramazzotti/CircoTax/wiki/Usage#circotaxautoda).

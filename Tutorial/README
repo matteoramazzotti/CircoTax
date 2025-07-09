@@ -3,3 +3,81 @@ This folder contains two CircoTax tutorials (a PDF document and an R script) alo
 The PDF provides an overview of CircoTax’s main and ancillary functions, outlines their key features, lists required dependencies and presents graphical examples of the expected outputs.
 
 The R script demonstrates a complete workflow showcasing the versatility of the ancillary auto_DA functions, starting from the loading of a raw phyloseq object ("data.R", obtained from the processing of data analysed in https://doi.org/10.1186/s13293-023-00523-w).
+
+
+# CircoTax_DESeq2() and CircoTax_ALDEx2()
+
+Along with the CircoTax function, two automatic differential analysis (Auto DA) ancillary functions, called *CircoTax_DESeq2()* and *CircoTax_ALDEx2()*, are available.
+By default, those functions perform the differential analysis at each taxonomic level between two groups using either *DESeq2* or *ALDEx2*. They then filter the significant results and finally generate as outputs a tsv table, a box plot of percent abundances and a CircoTax plot of the results.
+
+The argument *input_phyloseq* requires a phyloseq object with OTU table, tax table and sample data. Such a demo object is provided with the name example_data.RData. Considering that *DESeq2* and *ALDEx2* packages operate their own transformations, we suggest using the raw absolute counts to avoid loss of performances or bugs related to those packages.
+
+The argument *contrast* requires a vector of three characters which are (in this order) the names of the factor of interest and two of its levels of which report the differences (e.g. BaseLevel versus OtherLevel, or level A versus level B, or Healthy versus Disease, or Male versus Female etc.). The factors and the levels name are searched in the sample data of the phyloseq object in input.
+
+
+```
+	source("CircoTax_DESeq2.R")
+
+	load("Tutorial/data.RData")
+	data_to_analyse <- subset_samples(data, Condition=="Condition")
+	CircoTax_DESeq2( input_phyloseq = data_to_analyse, contrast = c("Factor","BaseLevel","OtherLevel"))
+```
+
+The *CircoTax_ALDEx2()* analysis is based on the parametric version of *ALDEx2* but the user can also specify a custom model design to perform the analysis on ranks. Moreover, the behaviour of those underlying algorithms can be easily modified by using simple arguments, e.g. the *ALDEx2* package does not use the BH correction by itself (at least until version 1.34) but the related AutoDA function use BH corrected p-value (if not stated otherwise during the function call).
+
+```
+	source("CircoTax_ALDEx2.R")
+
+	load("Tutorial/data.RData")
+	data_to_analyse <- subset_samples(data, Condition=="Condition")
+	CircoTax_ALDEx2( input_phyloseq = data_to_analyse, contrast = c("Factor","BaseLevel","OtherLevel"))
+```
+
+The associated boxplots can be plotted aside the CircoTax to display also the abundances of the resulting taxa. By default, the abundances in the box plot undergo a square root transformation to enhance the visualization of lower counts. 
+However, being this transformation may be misleading in case of decimal counts, users are given the option to disable it if needed.
+
+The following settings are also available to customize the analysis:
+
+- **Design**: Statistical design (within the limits of *DESeq2* or *ALDEx2*) on which the analysis is conducted. Its input has to be a vector of a single character (a string), for example, design='~ Gender+Condition'.
+- **p_value**: p-value threshold (after the multiple test adjustment) to consider a result as significant. It defaults to 0.05
+- **p_adjustment**: Multiple test adjustment by adjusting (penalize) each p-value. The possible inputs are "BH" (Benjamini-Hochberg) and "holm" (Holm). It defaults to "BH".
+- **remove_redundants**: Enable the automatic removal of redundant results (e.g. result repeated also in higher taxonomic levels being the only observation in that taxonomic clade). It defaults to TRUE.
+- **remove_results**: Results which have not been displayed. Its input has to be a vector whose characters are the bacteria name to remove. It defaults to an empty vector.
+- **taxout**: Taxonomic level to exclude. Its input has to be a vector whose characters are the taxonomic level to remove. It defaults to an empty vector.
+- **W**: Width of the box plot, in inches. It defaults to 10.
+- **H**: Height of the box plot, in inches. It defaults to 7.
+- **COLOR_A**: Color of the tested level box in the box plot. It defaults to *coral*.
+- **COLOR_B**: Color of the reference level box in the box plot. It defaults to *chatreuse*.
+- **sqrt_y_axis**: The Y-axis ticks in the boxplot increase following a square root scale to improve the readability of lower abundances. NB: this option may be misleading on decimal counts. It defaults to TRUE.
+- **plot_boxplot**: Enable the generation of the box plot. It defaults to TRUE.
+- **plot_circo**: Enable the generation of the CircoTax. It defaults to TRUE.
+- **sort_circo**: Sorting logic of the results in the CircoTax. The possible inputs are "rank" (by taxonomic rank), "fc" (by fold change), "absfc" (by absolute fold change) and "alpha" (alphabetic). It defaults to "rank".
+- **size_taxon_circo**: Size of the taxa labels. It defaults to 3.
+- **format_image**: Format of the files to which save the plots. The possible inputs are "png" and "pdf". It defaults to png.
+- **save_path**: Path where to save the tables and figures. It defaults to the working directory.
+- **auto_save**: Enable the export of the results on the PC. By disabling this option, tables and plots will be returned as an object in the R environment. It defaults to TRUE.
+- **auto_log**: Enable the displaying of each of the advanced settings with default values as messages in the R console at the end of the analysis. It defaults to TRUE.
+
+Some additional arguments are exclusive to *CircoTax_DESeq2()*:
+
+- **lfc**: Log fold change threshold. It defaults to 1.
+- **lfc_shrink_method**: Shrinkage method of the log fold change. The possible inputs are "none", "apeglm" and "ashr". It defaults to None.
+- **B**: *DESeq2* base-mean threshold (mean after *DESeq2* values transformation) under which exclude results. It defaults to 50.
+
+Some additional arguments are exclusive to *CircoTax_ALDEx2()*:
+
+- **eff_size**: *ALDEx2* effect size threshold under which exclude results. It defaults to 0.
+- **MCS**: Monte-Carlo samples to generate during ALDEx2 computations. It defaults to 128.
+
+
+Proving both algorithms through the respective functions, the user has the opportunity to choose the approach which he considers more suitable for the analysed data.
+
+By default, a complete list of applied settings is displayed after each analysis. Additionally, settings that could influence the results are documented in a CSV file named "CircoTax_Settings". The CSV file with the results and the plots are also saved as separate files in the working directory (by default) called "results", "CircoTax_plot" and "boxplot"
+
+> [!NOTE]  
+> The Auto DA functions internally performs the following adjustments to improve the process speed and
+results readability:
+> - each observation (row) in the abundance matrix totalling a value lower than 10 is discarded before the analysis;
+> - during the aggregation of counts, the NA observation are not discarded (*NArm=F* in the *phyloseq* function *tax_glom()*);
+> - result repeated in multiple taxonomic levels because they are only observation in that taxonomic clade are seen as "redundant" and then removed regardless their significance (if not stated otherwise during the function call);
+> - genera labelled as "uncultured" or "NA" are renamed using their family name if available, e.g. an uncultured genus of Tannerellaceae family will be renamed *"uncultured_f_Tannerellaceae"* to be discernible from other uncultured genera.
