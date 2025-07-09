@@ -6,7 +6,7 @@
 #' @param input_table Input DataFrame
 #' @param title Title display on the plot. Default: CircoTax plot
 #' @param fill_text Text to display above the color legend. Default: log2FC
-#' @param ramp Character vector to represent a color gradient for the log2FC scale of values. Default: Defaults to c("blue","white","orange")
+#' @param ramp Character vector to represent a color gradient for the log2FC scale of values, from min to max. Default: Defaults to c("blue","white","orange")
 #' @param tax_col Column index or range of column indexes holding IDs for the ranks. Default: 2:length(colnames(input_table))
 #' @param fc_col Column index holding log2FC values. Default: 1 when tax_col argument is a range of indexes else 3 
 #' @param names Column index holding IDs for the taxon, used when tax_col argument is a single index. Default: 1

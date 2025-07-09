@@ -5,7 +5,7 @@
 #'
 #' @param data phyloseq input object
 #' @param contrast Vector of three characters which are (in this order) the names of the factor of interest and two of its levels of which report the differences. e.g. c("SEX","M","F")
-#' @param design String describing statistical design (within the limits of DESeq2 or ALDEx2) on which the analysis is conducted. e.g. '~ Gender+Condition
+#' @param design String describing statistical design (within the limits of DESeq2 or ALDEx2) on which the analysis is conducted. e.g. '~ Gender+Condition'. Default: NULL
 #' @param tax_out Vector whose characters are the taxonomic level to remove. Default: c()
 #' @param mode Differential Analysis method to be used, either "DESeq2" or "ALDEx2". Default: "DESeq2"
 #' @param MCS Monte-Carlo samples to generate during ALDEx2 computations. Default: 128.
