@@ -13,11 +13,17 @@ CircoTax(
   fc_col = ifelse(length(tax_col) > 1, 1, 3),
   names = 1,
   size_taxon_circo = 4,
+  rank_ann_size = 4.5,
+  legend_height = 50,
+  legend_width = 18,
+  legend_title_size = 15,
+  legend_text_size = 10,
   sort = c("rank", "no", "fc", "absfc", "alpha", "alpharank"),
   rank_vector = c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species"),
   decrease_order = FALSE,
   collapse_ranks = FALSE,
   save_path = NULL,
+  output_name = "CircoTax_plot",
   image_dim = 4000,
   save_format = "png"
 )
@@ -37,7 +43,17 @@ CircoTax(
 
 \item{names}{Column index holding IDs for the taxon, used when tax_col argument is a single index. Default: 1}
 
-\item{size_taxon_circo}{Size of plot annotation. Default: 4}
+\item{size_taxon_circo}{Size of plot IDs annotation. Default: 4}
+
+\item{rank_ann_size}{Size of plot ranks annotation. Default: 4.5}
+
+\item{legend_height}{Height for legend bar (in pt) Default: 50}
+
+\item{legend_width}{Width for legend bar (in pt) Default: 18}
+
+\item{legend_title_size}{Legend title text size (in pt) Default: 15}
+
+\item{legend_text_size}{Legend scale text size (in pt) Default: 10}
 
 \item{sort}{Sorting logic: "no" (no sorting), "rank" (by taxonomic rank), "fc" (by fold change), "absfc" (by absolute fold change), "alpha" (alphabetic order), "alpharank" (). Default: "rank".}
 
@@ -49,9 +65,11 @@ CircoTax(
 
 \item{save_path}{Save path for plot image. Default: NULL}
 
+\item{output_name}{Name for saved file. Default: "CircoTax_plot"}
+
 \item{image_dim}{Pixel value for height and width of the plot.  Default: 4000}
 
-\item{save_format}{"png" or "pdf". Default: "png"}
+\item{save_format}{"png" or "tiff" or "jpeg". Default: "png"}
 }
 \value{
 CircoTax plot
