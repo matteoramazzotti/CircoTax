@@ -28,7 +28,8 @@ CircoTaxTableFormatter <- function(
 			if (length(toRemove) > 0) {
 				input_table <- input_table[ -c(toRemove) ]
 			}
-			uniqueRanksTagsInTable <- colnames(input_table[-c(1)])
+			extra_cols = length(colnames(input_table)) - length(tax_col)
+			uniqueRanksTagsInTable <- colnames(input_table[-c(1:extra_cols)])
 		} else {
 			uniqueRanksTagsInTable <- colnames(input_table[tax_col])
 		}
