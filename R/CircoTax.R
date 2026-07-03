@@ -116,7 +116,8 @@ CircoTax = function (
 		id = 1:dim(input_table)[1],
 		name = settings$labels,
 		rank = settings$y,
-		FC = settings$fc
+		FC = settings$fc,
+		PVAL = settings$pval
 	)
 
   # plot settings
