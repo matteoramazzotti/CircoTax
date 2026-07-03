@@ -160,46 +160,28 @@ CircoTax = function (
   circoClip = ggplot2::coord_polar(start = 0, clip="off")
   circoLegendTitle = ggplot2::labs(fill = fill_text)
 
-  #the plot starts here
-	if (!is.null(save_path)) {
-		scale = image_dim / 4000
-		switch(
-			save_format,
-			tiff = {
-				ragg::agg_tiff(paste0(save_path,"/",output_name,".",save_format), width = image_dim, height = image_dim, units = "px", res = 300, scaling = scale)
-			},
-			jpeg = {
-				ragg::agg_jpeg(paste0(save_path,"/",output_name,".",save_format), width = image_dim, height = image_dim, units = "px", res = 300, scaling = scale)
-			},
-			{
-				ragg::agg_png(paste0(save_path,"/",output_name,".",save_format), width = image_dim, height = image_dim, units = "px", res = 300, scaling = scale)
-			}
-		)
-	}
-	plot(
-		ggplot2::ggplot(
-			df,
-			ggplot2::aes(x = id, y = rank)
-		) +
-		circoTitle +
-		circoBars + 
-		circoGradient +
-		circoClip +
-		circoLines +
-		circoAnnotation +
-		circoAnnotationTrim +
-		circoLegendTitle + 
-		ggplot2::theme(
-			axis.text = ggplot2::element_blank(),
-			axis.ticks = ggplot2::element_blank(),
-			axis.title = ggplot2::element_blank(),
-			legend.title = ggplot2::element_text(hjust=0.5, size = legend_title_size),
-			legend.text = ggplot2::element_text(size = legend_text_size),
-			legend.key.height = ggplot2::unit(50,"pt"),
-			legend.key.width = ggplot2::unit(18,"pt"),
-			panel.background = ggplot2::element_rect(fill = NA),
-			plot.margin = grid::unit(rep(1,4), "cm"),      # It adjusts the margins of the plot to avoid the trimming of the labels!
-			plot.title = ggplot2::element_text(hjust = 0.5,face="bold", size=18)
-		)
-	)
+# Save logic
+
+save_on = FALSE
+if (!is.null(save_path)) {
+	save_on = TRUE
+  scale = image_dim / 4000
+	switch(
+    save_format,
+		tiff = {
+      ragg::agg_tiff(paste0(save_path,"/",output_name,".",save_format), width = image_dim, height = image_dim, units = "px", res = 300, scaling = scale)
+    },
+		jpeg = {
+      ragg::agg_jpeg(paste0(save_path,"/",output_name,".",save_format), width = image_dim, height = image_dim, units = "px", res = 300, scaling = scale)
+    },
+    {
+			message("Saving to: ", file.path(save_path, paste0(output_name, ".", save_format)))
+			ragg::agg_png(paste0(save_path,"/",output_name,".",save_format), width = image_dim, height = image_dim, units = "px", res = 300, scaling = scale)
+		}
+  )
+}
+
+	if (save_on) {
+		dev.off()
+	} 
 }
