@@ -121,16 +121,59 @@ CircoTax = function (
 	)
 
   # plot settings
-  circoTitle = ggplot2::ggtitle(title) # plot Title
-  circoBars = ggplot2::geom_col(  # bars logic
-    ggplot2::aes(fill=FC),
+	
+  circoTitle = ggplot2::ggtitle(title)
+  circoBars = ggplot2::geom_col(
+    ggplot2::aes(fill = FC),
     position = "dodge"
   )
   circoGradient = ggplot2::scale_fill_gradient2(
-    low = ramp[1],
-    mid = ramp[2],
-    high = ramp[3]
+		name = fill_text,
+    low = ramp[1], mid = ramp[2], high = ramp[3]
   )
+
+  if (pval_enabled) {
+
+    outer_ring = length(tax_col)
+    crown_y = outer_ring + crown_height
+
+    bar_width = 0.9
+
+    crown_rects = data.frame(
+      xmin = df$id - bar_width / 2,
+      xmax = df$id + bar_width / 2,
+      ymin = outer_ring,
+      ymax = crown_y,
+      PVAL = df$PVAL
+    )
+
+    circoNewFillScale = ggnewscale::new_scale_fill()
+
+    circoCrownArea = ggplot2::geom_rect(
+      data = crown_rects,
+      ggplot2::aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = PVAL),
+      inherit.aes = FALSE
+    )
+    circoCrownGradient = ggplot2::scale_fill_gradient(
+      low = ramp2[1], high = ramp2[2],
+      name = fill_text2
+    )
+
+    circoCrownCircle = ggplot2::geom_hline(
+      yintercept = crown_y,
+      color = "grey"
+    )
+
+    circoCrownLayers = list(
+      circoNewFillScale,
+      circoCrownArea,
+      circoCrownGradient,
+      circoCrownCircle
+    )
+  } else {
+    crown_y = outer_ring = length(tax_col)
+    circoCrownLayers = NULL
+  }
 
   circoAnnotation = ggplot2::annotate(
     "text",
