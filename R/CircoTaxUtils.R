@@ -81,8 +81,9 @@ CircoTaxSorter <- function(
 	input_table,
 	sort = "rank",
 	decrease_order = FALSE,
-	tax_col=2:length(colnames(input_table)),
-  fc_col= ifelse(length(tax_col)>1,1,3)
+	tax_col = 2:length(colnames(input_table)),
+  fc_col = ifelse(length(tax_col)>1,1,3),
+	pval_col = NA
 ) {
 	y = apply(input_table,1,function(x) length(tax_col)-sum(ifelse(is.na(x[tax_col]),1,0)))
 	settings = switch(
@@ -93,7 +94,8 @@ CircoTaxSorter <- function(
 			labels=unlist(lapply(strsplit(gsub("-NA.*","",perl=T,synth),"-"),function(x) rev(x)[1]))
 			y=y[o]
 			fc=input_table[o,fc_col]
-			list(labels = labels, y = y, fc = fc)
+			pval=input_table[o,pval_col]
+			list(labels = labels, y = y, fc = fc, pval = pval)
 		},
 		alpharank = {
 			synth=apply(input_table[,tax_col],1,function(x) paste0(x,collapse="-"))
@@ -102,7 +104,8 @@ CircoTaxSorter <- function(
 			labels=unlist(lapply(strsplit(gsub("-NA.*","",perl=T,synth),"-"),function(x) rev(x)[1]))
 			y=y[o]
 			fc=input_table[o,fc_col]
-			list(labels = labels, y = y, fc = fc)
+			pval=input_table[o,pval_col]
+			list(labels = labels, y = y, fc = fc, pval = pval)
 		},
 		alpha = {
 			synth=apply(input_table[,tax_col],1,function(x) paste0(x,collapse="-"))
@@ -111,7 +114,8 @@ CircoTaxSorter <- function(
 			labels=labels[o]
 			y=y[o]
 			fc=input_table[o,fc_col]
-			list(labels = labels, y = y, fc = fc)
+			pval=input_table[o,pval_col]
+			list(labels = labels, y = y, fc = fc, pval = pval)
 		},
 		fc = {
 			o=order(input_table[,fc_col],decreasing=decrease_order)
@@ -120,7 +124,8 @@ CircoTaxSorter <- function(
 			labels=unlist(lapply(strsplit(gsub("-NA.*","",perl=T,synth),"-"),function(x) rev(x)[1]))
 			y=y[o]
 			fc=input_table[o,fc_col]
-			list(labels = labels, y = y, fc = fc)
+			pval=input_table[o,pval_col]
+			list(labels = labels, y = y, fc = fc, pval = pval)
 		},
 		absfc = {
 			o=order(abs(input_table[,fc_col]),decreasing=decrease_order)
@@ -128,14 +133,26 @@ CircoTaxSorter <- function(
 			labels=unlist(lapply(strsplit(gsub("-NA.*","",perl=T,synth),"-"),function(x) rev(x)[1]))
 			y=y[o]
 			fc=input_table[o,fc_col]
-			list(labels = labels, y = y, fc = fc)
+			pval=input_table[o,pval_col]
+			list(labels = labels, y = y, fc = fc, pval = pval)
+		},
+		pval = {
+			o=order(input_table[,pval_col],decreasing=decrease_order)
+			synth=apply(input_table[,tax_col],1,function(x) paste0(x,collapse="-"))
+			synth=synth[o]
+			labels=unlist(lapply(strsplit(gsub("-NA.*","",perl=T,synth),"-"),function(x) rev(x)[1]))
+			y=y[o]
+			fc=input_table[o,fc_col]
+			pval=input_table[o,pval_col]
+			list(labels = labels, y = y, fc = fc, pval = pval)
 		},
 		{
 			synth=apply(input_table[,tax_col],1,function(x) paste0(x,collapse="-"))
 			labels=unlist(lapply(strsplit(gsub("-NA.*","",perl=T,synth),"-"),function(x) rev(x)[1]))
 			y=y
 			fc=input_table[,fc_col]
-			list(labels = labels, y = y, fc = fc)
+			pval=input_table[o,pval_col]
+			list(labels = labels, y = y, fc = fc, pval = pval)
 		}
 	)
 	return(settings)
