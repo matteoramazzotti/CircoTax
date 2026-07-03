@@ -5,9 +5,12 @@
 #'
 #' @param input_table Input DataFrame
 #' @param title Title display on the plot. Default: CircoTax plot
+#' @param fill_text Text to display above the bar color legend. Default: log2FC
 #' @param fill_text2 Text to display above the crown color legend. Default: -log10padj
+#' @param ramp Character vector to represent a color gradient for the bars scale of values, from min to max. Default: Defaults to c("blue","white","orange")
 #' @param ramp2 Character vector to represent a 2 level color gradient for the crown arcs scale of values, from min to max. Default: c("red","blue")
 #' @param tax_col Column index or range of column indexes holding IDs for the ranks. Default: 2:length(colnames(input_table))
+#' @param fc_col Column index holding log2FC values. Default: 1 when tax_col argument is a range of indexes else 3
 #' @param pval_col Column index holding p-values to be represented as colored crown arcs. Default: NA
 #' @param names Column index holding IDs for the taxon, used when tax_col argument is a single index. Default: 1
 #' @param size_taxon_circo Size of plot IDs annotation. Default: 4
