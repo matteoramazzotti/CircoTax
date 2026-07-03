@@ -8,17 +8,21 @@ CircoTax(
   input_table,
   title = "CircoTax plot",
   fill_text = "log2FC",
+  fill_text2 = "-log10padj",
   ramp = c("blue", "white", "orange"),
+  ramp2 = c("red", "blue"),
   tax_col = 2:length(colnames(input_table)),
   fc_col = ifelse(length(tax_col) > 1, 1, 3),
+  pval_col = NA,
   names = 1,
   size_taxon_circo = 4,
+  crown_height = 0.2,
   rank_ann_size = 4.5,
   legend_height = 50,
   legend_width = 18,
   legend_title_size = 15,
   legend_text_size = 10,
-  sort = c("rank", "no", "fc", "absfc", "alpha", "alpharank"),
+  sort = c("rank", "no", "fc", "absfc", "pval", "alpha", "alpharank"),
   rank_vector = c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species"),
   decrease_order = FALSE,
   collapse_ranks = FALSE,
@@ -33,17 +37,25 @@ CircoTax(
 
 \item{title}{Title display on the plot. Default: CircoTax plot}
 
-\item{fill_text}{Text to display above the color legend. Default: log2FC}
+\item{fill_text}{Text to display above the bar color legend. Default: log2FC}
 
-\item{ramp}{Character vector to represent a color gradient for the log2FC scale of values, from min to max. Default: Defaults to c("blue","white","orange")}
+\item{fill_text2}{Text to display above the crown color legend. Default: -log10padj}
+
+\item{ramp}{Character vector to represent a color gradient for the bars scale of values, from min to max. Default: Defaults to c("blue","white","orange")}
+
+\item{ramp2}{Character vector to represent a 2 level color gradient for the crown arcs scale of values, from min to max. Default: c("red","blue")}
 
 \item{tax_col}{Column index or range of column indexes holding IDs for the ranks. Default: 2:length(colnames(input_table))}
 
 \item{fc_col}{Column index holding log2FC values. Default: 1 when tax_col argument is a range of indexes else 3}
 
+\item{pval_col}{Column index holding p-values to be represented as colored crown arcs. Default: NA}
+
 \item{names}{Column index holding IDs for the taxon, used when tax_col argument is a single index. Default: 1}
 
 \item{size_taxon_circo}{Size of plot IDs annotation. Default: 4}
+
+\item{crown_height}{Crown arcs distance from last rank circle. Default: 0.2}
 
 \item{rank_ann_size}{Size of plot ranks annotation. Default: 4.5}
 
