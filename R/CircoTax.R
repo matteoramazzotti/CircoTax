@@ -5,12 +5,13 @@
 #'
 #' @param input_table Input DataFrame
 #' @param title Title display on the plot. Default: CircoTax plot
-#' @param fill_text Text to display above the color legend. Default: log2FC
-#' @param ramp Character vector to represent a color gradient for the log2FC scale of values, from min to max. Default: Defaults to c("blue","white","orange")
+#' @param fill_text2 Text to display above the crown color legend. Default: -log10padj
+#' @param ramp2 Character vector to represent a 2 level color gradient for the crown arcs scale of values, from min to max. Default: c("red","blue")
 #' @param tax_col Column index or range of column indexes holding IDs for the ranks. Default: 2:length(colnames(input_table))
-#' @param fc_col Column index holding log2FC values. Default: 1 when tax_col argument is a range of indexes else 3 
+#' @param pval_col Column index holding p-values to be represented as colored crown arcs. Default: NA
 #' @param names Column index holding IDs for the taxon, used when tax_col argument is a single index. Default: 1
 #' @param size_taxon_circo Size of plot IDs annotation. Default: 4
+#' @param crown_height Crown arcs distance from last rank circle. Default: 0.2
 #' @param rank_ann_size Size of plot ranks annotation. Default: 4.5
 #' @param legend_height Height for legend bar (in pt) Default: 50
 #' @param legend_width Width for legend bar (in pt) Default: 18
@@ -30,11 +31,15 @@ CircoTax = function (
   input_table,
   title = "CircoTax plot",
   fill_text = "log2FC",
+	fill_text2 = "-log10padj",
   ramp = c("blue","white","orange"),
+	ramp2 = c("red","blue"),
   tax_col = 2:length(colnames(input_table)),
   fc_col = ifelse(length(tax_col)>1,1,3),
+	pval_col = NA,
   names = 1,
   size_taxon_circo = 4,
+	crown_height = 0.2,
 	rank_ann_size = 4.5,
 	legend_height = 50,
 	legend_width = 18,
