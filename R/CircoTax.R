@@ -222,6 +222,33 @@ if (!is.null(save_path)) {
   )
 }
 
+plot(
+    ggplot2::ggplot(
+      df,
+      ggplot2::aes(x = id, y = rank)
+    ) +
+    circoTitle +
+    circoBars +
+    circoGradient +
+    circoClip +
+    circoLines +
+		circoCrownLayers +
+    circoAnnotation +
+    circoAnnotationTrim +
+    circoLegendTitle +
+    ggplot2::theme(
+      axis.text = ggplot2::element_blank(),
+      axis.ticks = ggplot2::element_blank(),
+      axis.title = ggplot2::element_blank(),
+      legend.title = ggplot2::element_text(hjust = 0.5, size = legend_title_size),
+      legend.text = ggplot2::element_text(size = legend_text_size),
+      legend.key.height = ggplot2::unit(legend_height, "pt"),
+      legend.key.width = ggplot2::unit(legend_width, "pt"),
+      panel.background = ggplot2::element_rect(fill = NA),
+      plot.margin = grid::unit(rep(1, 4), "cm"),
+      plot.title = ggplot2::element_text(hjust = 0.5, face = "bold", size = 18)
+    )
+  )
 	if (save_on) {
 		dev.off()
 	} 
