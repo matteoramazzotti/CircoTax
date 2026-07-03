@@ -4,6 +4,7 @@ CircoTaxTableFormatter <- function(
 	names_col = 1,
 	tax_col = 2,
 	fc_col = 3,
+	pval_col = NA,
 	rank_vector = c("Domain","Phylum","Class","Order","Family","Genus","Species"),
 	collapse_ranks = FALSE
 ) {
@@ -44,12 +45,21 @@ CircoTaxTableFormatter <- function(
 	uniqueRanksNumsInTableO <- sort(uniqueRanksNumsInTable)
 	uniqueRanksTagsInTableO<-stringi::stri_replace_all_regex(uniqueRanksNumsInTableO,ranksN,rank_vector,vectorize_all=FALSE)
 	if (length(tax_col) > 1) {
-		dataFrame <- data.frame(FC = input_table[,fc_col],input_table[uniqueRanksTagsInTableO])
+		if (!is.na(pval_col)) {
+			dataFrame <- data.frame(FC = input_table[,fc_col], PVAL = input_table[,pval_col], input_table[uniqueRanksTagsInTableO])
+		} else {
+			dataFrame <- data.frame(FC = input_table[,fc_col], PVAL = NA, input_table[uniqueRanksTagsInTableO])
+		}
 		return(dataFrame)
 	} else {
-		dataFrame <- data.frame(FC = input_table[,fc_col])
+		if (!is.na(pval_col)) {
+			dataFrame <- data.frame(FC = input_table[,fc_col], PVAL = input_table[,pval_col])
+		} else {
+			dataFrame <- data.frame(FC = input_table[,fc_col], PVAL = NA)
+		}
 		dataFrame[uniqueRanksTagsInTableO] = NA
 	}
+	
 
 	names <- input_table[,names_col]
 	for (i in 1:length(names)) {
