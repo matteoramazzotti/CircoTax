@@ -70,6 +70,7 @@ CircoTax = function (
 		names_col = names,
 		tax_col = tax_col,
 		fc_col = fc_col,
+		pval_col = pval_col,
 		rank_vector = rank_vector,
 		collapse_ranks = collapse_ranks
 	)
@@ -105,6 +106,7 @@ CircoTax = function (
 		sort = sort[1],
 		tax_col = tax_col,
 		fc_col = fc_col,
+		pval_col = pval_col,
 		decrease_order = decrease_order
 	)
 
