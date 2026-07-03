@@ -73,9 +73,22 @@ CircoTax = function (
 		rank_vector = rank_vector,
 		collapse_ranks = collapse_ranks
 	)
-	tax_col = 2:length(colnames(input_table))
+	pval_enabled = FALSE
+	if (!is.na(pval_col)) {
+		pval_enabled = TRUE
+	}
+
 	fc_col = 1
+	pval_col = 2
+	tax_col = 3:length(colnames(input_table))
 	
+	pval_na_counts <- colSums(is.na(input_table["PVAL"]))
+
+	if (pval_na_counts == dim(input_table)[1] && pval_enabled) {
+		pval_enabled = FALSE
+		warning("NO PVALUE HERE")
+	}
+
 	gplot_rank_labels <- unlist(
 		lapply(
 			colnames(input_table[,tax_col]),
@@ -83,7 +96,6 @@ CircoTax = function (
 		)
 	)
 
-	
   #build the taxa-related variables (tax index and label)
   #ranks are assumed to be in decreasing order from kinkdom(domain) to species
   #y represent the height (from the center of the circle) of the bars => domain=1 (min) species=7 (max)
