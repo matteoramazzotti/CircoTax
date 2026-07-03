@@ -194,12 +194,11 @@ CircoTax = function (
     alpha = 0.6,
     size = size_taxon_circo,
   )
-
-  circoLines = ggplot2::geom_hline( 
-    yintercept= 1:length(tax_col),
-    color="grey"
-  ) 
-  circoClip = ggplot2::coord_polar(start = 0, clip="off")
+  circoLines = ggplot2::geom_hline(
+    yintercept = 1:length(tax_col),
+    color = "grey"
+  )
+  circoClip = ggplot2::coord_polar(start = 0, clip = "off")
   circoLegendTitle = ggplot2::labs(fill = fill_text)
 
 # Save logic
