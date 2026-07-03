@@ -178,16 +178,15 @@ CircoTax = function (
   circoAnnotation = ggplot2::annotate(
     "text",
     label = gplot_rank_labels,
-    x = rep(0,length(tax_col)),
+    x = rep(0, length(tax_col)),
     y = 1:length(tax_col),
     size = rank_ann_size,
     vjust = 0.58
   )
-
-  circoAnnotationTrim = ggh4x::geom_text_aimed(  # it allows to calculate the ideal angle to have labels perfectly perpendicular to the axis
+  circoAnnotationTrim = ggh4x::geom_text_aimed(
     ggplot2::aes(
       x = id,
-      y = length(tax_col) + 1,
+      y = crown_y + 1,
       label = df[,"name"]
     ),
     color = "black",
