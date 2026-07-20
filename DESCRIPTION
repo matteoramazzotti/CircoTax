@@ -17,6 +17,7 @@ Imports:
     ggh4x (>= 0.3.1),
     stringi (>= 1.8.4),
     ggplot2 (>= 3.5.2),
+    ggnewscale (>= 0.5.2),
     ragg,
     apeglm,
     ashr,
