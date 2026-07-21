@@ -4,7 +4,7 @@ A basic Quickstart guide is provided here, please refer to the Documentation for
 
 <p align="center">
 	<img src="docs/img/CircoTax_plot_default.png" width="49%"  title="CircoTax Plot obtained from a complete taxonomy matrix.">
-	<img src="docs/img/CircoTax_plot_custom.png" width="49%"  title="CircoTax Plot obtained from a custom R data.frame composed of three columns, namely taxon name, taxonomic rank name and value to display (e.g. FC).">
+	<img src="docs/img/CircoTax_plot_pval.png" width="49%"  title="CircoTax Plot with p-values represented as grey-scaled crown arcs.">
 </p>
 
 A Shiny R implementation module is available at [CircoTaxShiny](https://github.com/lorenzocasbarra/CircoTaxShiny) and an interactive live demo is available at [shinyapps.io](https://lorenzocasbarra.shinyapps.io/circotax-dashboard/).
@@ -41,7 +41,7 @@ To install with *devtools* :
 ```
 
 <p align="center">
-	<img src="docs/img/CircoTax_plot_default.png" width="50%"  title="CircoTax Plot obtained from a complete taxonomy matrix.">
+	<img src="docs/img/CircoTax_plot_default.png" width="50%"  title="CircoTax Plot obtained from a complete taxonomy matrix with pvalues.">
 </p>
 
 
@@ -96,10 +96,35 @@ An input example is included in the file [*circotax_example_2*](https://raw.gith
 |      Clostridia     |     Genus     | 4.235196 |
 
 
+### How to plot a CircoTax with p-values
+
+CircoTax can also plot p-values as colored crown arcs:
+
+```r
+	library("circotax")
+	file_format_3 <- system.file("extdata", "circotax_example_3.txt", package = "circotax")
+	data = read.delim(file_format_3, sep = "\t")
+	CircoTax(data, tax_col = 9:14, fc_col = 8, pval_col = 7)
+```
+
+<p align="center">
+	<img src="docs/img/CircoTax_plot_pval.png" width="49%"  title="CircoTax Plot with p-values represented as grey-scaled crown arcs.">
+</p>
+
+An input example is included in the file [*circotax_example_3*](https://raw.githubusercontent.com/matteoramazzotti/CircoTax/refs/heads/main/inst/extdata/circotax_example_3.txt): 
+
+| **name**      | **baseMean**         | **log2FoldChange**    | **lfcSE**             | **stat**              | **pvalue**               | **padj**                 | **lfcShrink**         | **Domain**   | **Phylum**                      | **Class**      | **Order**           | **Family** | **Genus** |
+|-----------|------------------|-------------------|-------------------|-------------------|----------------------|----------------------|-------------------|----------|-----------------------------|------------|-----------------|--------|-------|
+| DENOVO361 | 21.4736260581753 | -5.06261193420508 | 1.51987927151203  | -3.33093031077964 | 0.000865562687453    | 0.004039292541449    | -2.42389159983366 | Bacteria | Chloroflexi                 | NA         | NA              | NA     | NA    |
+| DENOVO19  | 1538.97535211832 | 3.89585226987376  | 0.436664762708442 | 8.92183799239828  | 4.58612757144728E-19 | 6.42057860002619E-18 | 3.78227921927238  | Bacteria | Tenericutes                 | NA         | NA              | NA     | NA    |
+| DENOVO214 | 48.0520027689096 | -7.33791827229029 | 1.59732005784811  | -4.59389352574451 | 4.3505141806025E-06  | 3.04535992642175E-05 | -1.22160728192622 | Bacteria | Planctomycetes              | NA         | NA              | NA     | NA    |
+| DENOVO146 | 168.430687599077 | -2.35708457253219 | 0.818826382423731 | -2.87861337046225 | 0.003994276860386    | 0.011183975209081    | -1.57437353653794 | Bacteria | Candidatus Saccharibacteria | NA         | NA              | NA     | NA    |
+| DENOVO19  | 1533.84004219576 | 3.92541902814169  | 0.488029228514476 | 8.04340969513317  | 8.73726005894387E-16 | 2.09694241414653E-14 | 3.78248901949319  | Bacteria | Tenericutes                 | Mollicutes | NA              | NA     | NA    |
+| DENOVO19  | 1243.04595778702 | 5.6228444804319   | 0.711816112921221 | 7.8992936214331   | 2.8048843405529E-15  | 1.12195373622116E-13 | 5.30166800158731  | Bacteria | Tenericutes                 | Mollicutes | Mycoplasmatales | NA     | NA    |
+
 
 > [!NOTE]  
 > The function `CircoTax()` can also take optional arguments. More information regarding this can be found in the [Wiki](https://github.com/matteoramazzotti/CircoTax/wiki/Usage#circoTax).
-
 
 ### How to plot a CircoTax using Auto DA functions
 
