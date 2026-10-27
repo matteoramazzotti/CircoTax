@@ -127,7 +127,11 @@ CircoTaxAutoDA <- function(
 				p_val = p_val,
 				eff_size = eff_size
 			)
-			# results<-row.names(res)
+			if (nrow(res) == 0) {
+				cat("Any results for the", t, "level\n")
+				Sys.sleep(1)
+				next
+			}
 			r<-as.data.frame(res)
 			Taxa.d<-as.data.frame(phyloseq::tax_table(d))
 			Taxa.d$ASV<-row.names(Taxa.d)
