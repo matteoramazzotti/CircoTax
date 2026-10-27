@@ -104,7 +104,14 @@ CircoTax can also plot p-values as colored crown arcs:
 	library("circotax")
 	file_format_3 <- system.file("extdata", "circotax_example_3.txt", package = "circotax")
 	data = read.delim(file_format_3, sep = "\t")
-	CircoTax(data, tax_col = 9:14, fc_col = 8, pval_col = 7)
+	CircoTax(
+		data,
+		tax_col = 9:14,
+		fc_col = 8, 
+		pval_col = 7,
+		sort = "pval",
+		decrease_order = TRUE
+	)
 ```
 
 <p align="center">
@@ -136,7 +143,7 @@ An input example is included in the file [*circotax_example_3*](https://raw.gith
 
 	data <- subset_samples(circotax::circotax_phyloseq_example, DISEASE == "H")
 	df = CircoTaxAutoDA(data, mode = "DESeq2", contrast = c("SEX","M","F"))
-	CircoTax(df) 
+	CircoTax(df, tax_col=3:7) 
 ```
 
 The above code is performed taking a *phyloseq* object named *circotax_phyloseq_example* which is bundled with our library and obtained by [*Elena Niccolai et al.*](https://doi.org/10.1186/s13293-023-00523-w) and results in the following CircoTax plot:
