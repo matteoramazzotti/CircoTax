@@ -1,6 +1,6 @@
 Package: circotax
 Title: Radial plot for rank-aware collection of taxa
-Version: 0.0.1.0
+Version: 0.0.1.1
 Authors@R: 
     person("Lorenzo", "Casbarra", email = "", role = c("aut", "cre"))
     person("Leandro", "Di Gloria", email = "", role = c("aut", "cre"))
