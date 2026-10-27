@@ -231,9 +231,17 @@ CircoTaxAutoDA <- function(
 	}
 
 	if (resultsLength == 0) {
-		cat("\n\n Looks like there are not significant differences there! \n\n")
-    Sys.sleep(2)
-		return()
+		message("\n\n No significant differences found. \n\n")
+		return(data.frame(
+			log2FC = numeric(0),
+			padj   = numeric(0),
+			Phylum = character(0),
+			Class  = character(0),
+			Order  = character(0),
+			Family = character(0),
+			Genus  = character(0),
+			stringsAsFactors = FALSE
+		))
 	}
 
 	if (remove_redundants) {
