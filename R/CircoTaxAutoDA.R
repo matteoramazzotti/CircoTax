@@ -55,18 +55,32 @@ CircoTaxAutoDA <- function(
 	tax_in <- c("Phylum","Class","Order","Family","Genus")
   tax_in <- tax_in [! tax_in %in% tax_out ]   # tax_out is empty by default
   
-	if (!is.null(design)) {
-		there_it_is<-0
-    split<-gsub("~","",design,fixed = T)
-    split<-gsub(" ","",split,fixed = T)
-    split<-unlist(strsplit(split, "+", fixed = T))
-    for( i in 1:length(split) ){
-      if( split[i] %in% contrast){
-        there_it_is<-there_it_is + 1
-      }
-    }
+	# validating contrast factor and design
+	factor_col <- contrast[1]
+	sample_vars <- colnames(phyloseq::sample_data(data))
+	if (!factor_col %in% sample_vars) {
+		stop(
+			"\n\n The factor '", factor_col, "' of the contrast is not a column of the phyloseq sample data.\n",
+			"Available columns: ", paste(sample_vars, collapse = "  "), "\n\n"
+		)
+	}
+
+	if (is.null(design)) {
+		design <- paste("~", factor_col)
 	} else {
-		design <- paste("~",contrast[1])
+		design_vars <- all.vars(stats::as.formula(design))
+		if (!factor_col %in% design_vars) {
+			stop(
+				"\n\n The design '", design, "' does not include the contrast factor '", factor_col, "'.\n\n"
+			)
+		}
+		unknown_vars <- setdiff(design_vars, sample_vars)
+		if (length(unknown_vars) > 0) {
+			stop(
+				"\n\n These variables of the design are not columns of the phyloseq sample data: ",
+				paste(unknown_vars, collapse = ", "), "\n\n"
+			)
+		}
 	}
 
   if (tolower(mode[1]) == "aldex2") {
