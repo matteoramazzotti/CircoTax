@@ -4,7 +4,8 @@
 #' They then filter the significant results and generate a tsv table, ready to be displayed with CircoTax().
 #'
 #' @param data phyloseq input object
-#' @param contrast Character vector of length three: the name of the factor of interest and two of its levels, e.g. c("Condition","Healthy","Tumor"). Log fold changes are reported for the second level relative to the third in DESeq2 mode.#' @param design String describing statistical design (within the limits of DESeq2 or ALDEx2) on which the analysis is conducted. e.g. '~ Gender+Condition'. Default: NULL
+#' @param contrast Character vector of length three: the name of the factor of interest and two of its levels, e.g. c("Condition","Healthy","Tumor"). Log fold changes are reported for the second level relative to the third in DESeq2 mode.#'
+#' @param design String describing statistical design (within the limits of DESeq2 or ALDEx2) on which the analysis is conducted. e.g. '~ Gender+Condition'. Default: NULL
 #' @param tax_out Vector whose characters are the taxonomic level to remove. Default: c()
 #' @param mode Differential Analysis method to be used, either "DESeq2" or "ALDEx2". Default: "DESeq2"
 #' @param MCS Monte-Carlo samples to generate during ALDEx2 computations. Default: 128.
@@ -107,6 +108,9 @@ CircoTaxAutoDA <- function(
 		rm(data_pruned, data.genus_pruned)
 		data_pruned <- phyloseq::prune_taxa(phyloseq::taxa_sums(data) > 10, data)
 	})
+	tax_df <- as.data.frame(phyloseq::tax_table(data_pruned), stringsAsFactors = FALSE)
+	phyloseq::tax_table(data_pruned) <- as.matrix(autoDANameUnnamedTaxa(tax_df))
+	rm(tax_df)
 	Table_tot<-NULL
 	Res_tot<-NULL
 	resultsLength <- 0
@@ -115,16 +119,8 @@ CircoTaxAutoDA <- function(
     suppressWarnings(rm(list=c("d", "d.prop", "Taxa.d", "res","DE", "target", "r", "r_level", "index","names_target", "logical_to_subset")))
 		d <- phyloseq::tax_glom(data_pruned, taxrank = t, NArm = F)
     d.prop <- phyloseq::transform_sample_counts(d, function(x) x/sum(x)*100)
-		if(t == "Genus"){
-			taxa_temp <- as.data.frame(phyloseq::tax_table(d))
-			is_uncultured <- taxa_temp$Genus == "uncultured"
-			taxa_temp$Genus[is_uncultured] <- paste0("uncultured_ f ", taxa_temp$Family[is_uncultured])
-			fix_uf_u <- taxa_temp$Genus == "uncultured_ f uncultured"
-			taxa_temp$Genus[fix_uf_u] <- paste0("uncultured_ o ", taxa_temp$Order[fix_uf_u])
-			is_na_genus <- is.na(taxa_temp$Genus)
-			taxa_temp$Genus[is_na_genus] <- paste0("NA_ f ", taxa_temp$Family[is_na_genus])
-			fix_nf_na <- taxa_temp$Genus == "NA_ f NA"
-			taxa_temp$Genus[fix_nf_na] <- paste0("NA_ o ", taxa_temp$Order[fix_nf_na])
+		if (t == "Genus") {
+			taxa_temp <- as.data.frame(phyloseq::tax_table(d), stringsAsFactors = FALSE)
 			taxa_temp$Genus <- make.unique(taxa_temp$Genus)
 			phyloseq::tax_table(d) <- as.matrix(taxa_temp)
 			phyloseq::tax_table(d.prop) <- as.matrix(taxa_temp)
@@ -307,12 +303,13 @@ autoDARedundancyHandler <- function(
 	auto_ASV<-res_tot$ASV[duplicated(res_tot$ASV)]
 	auto_ASV_Names<-unique(table_tot$Bacteria[table_tot$OTU %in% auto_ASV])
 	auto_redund<-auto_redund[auto_redund %in% auto_ASV_Names]
-      
-	# 3) eventual redundant from the lower taxonomic level are not redundant!
+	      
+	#3) eventual redundant from the lower taxonomic level are not redundant!
 	lower_level<-res_tot$Taxon
 	lower_level<-factor(res_tot$Taxon)
 	lower_level<-lower_level[match(lower_level, c("Phylum","Class","Order","Family","Genus")) ] # this row ensures that the order is ALWAYS correct!  
 	lower_level<-as.character(lower_level[length(lower_level)]) # selects the last one
+
 	if(! is.na(lower_level) ){ # it is NA if the target level is the Genus (no Species!) --> error in the row below
 		auto_redund<-auto_redund[! auto_redund %in% res_tot[,lower_level] ]  # NB: If lower level is still a factor then its string would be seen as number by R --> wrong column
 	}
@@ -459,4 +456,36 @@ autoDAAldex2 <- function(
 
   keep <- !is.na(p_adj) & p_adj < p_val & Enough_eff_size
   return(res[keep, , drop = FALSE])
+}
+autoDANameUnnamedTaxa <- function(
+	tax,
+	unlabelled = "uncultured"
+) {
+	ranks <- c("Phylum", "Class", "Order", "Family", "Genus")
+	ranks <- ranks[ranks %in% colnames(tax)]
+	codes <- c(Phylum = "p", Class = "c", Order = "o", Family = "f")
+	orig  <- tax # labels are always derived from the original names
+	is_labelled <- function(x) !is.na(x) & !(x %in% unlabelled)
+
+	# Phylum is the top rank here, so it has nothing above to borrow a label from
+	for (i in seq_along(ranks)[-1]) {
+		r <- ranks[i]
+		x <- as.character(orig[[r]])
+		unnamed <- is.na(x) | (r == "Genus" & x %in% unlabelled)
+		prefix  <- ifelse(is.na(x), "NA", x) # "NA" or "uncultured"
+
+		# lowest labelled rank above r, as " <code> <name>"
+		tag <- rep(NA_character_, length(x))
+		for (u in rev(ranks[seq_len(i - 1)])) {
+			nm  <- as.character(orig[[u]])
+			hit <- is.na(tag) & is_labelled(nm)
+			tag[hit] <- paste0(" ", codes[[u]], " ", nm[hit])
+		}
+		tag[is.na(tag)] <- " NA" # no labelled rank above
+
+		out <- x
+		out[unnamed] <- paste0(prefix[unnamed], "_", tag[unnamed])
+		tax[[r]] <- out
+	}
+	tax
 }
