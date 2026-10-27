@@ -325,27 +325,40 @@ autoDADESeq2 <- function(
 	data,
 	design,
 	contrast,
-	lfc_shrink_method = NULL,
+	lfc_shrink_method = "none",
 	p_val = 0.05,
 	p_adjustment = "BH",
 	lfc = 1,
 	B = 50
 ){
+	if (is.null(lfc_shrink_method)) lfc_shrink_method <- "none"
 	DEseq_data<-phyloseq::phyloseq_to_deseq2(data, design = stats::formula(design) )
 	DE<-DESeq2::DESeq(DEseq_data)
-	res = switch(
-		lfc_shrink_method,
-		apeglm = {
-			coef_input <- DESeq2::resultsNames(DE)[ grepl(pattern = contrast[1], DESeq2::resultsNames(DE)) & grepl(pattern = contrast[2], DESeq2::resultsNames(DE))]
-      DESeq2::lfcShrink(DE, coef= coef_input, type = lfc_shrink_method ) 
-		},
-		ashr = {
-      DESeq2::lfcShrink(DE, contrast= contrast, type = lfc_shrink_method )
-		},
-		{
-      DESeq2::results(DE, contrast= contrast) # In DESeq2 itself the contrast is specified as follows contrast=c("Condition","Healthy","RCC")
-		}
-	)
+
+	res <- DESeq2::results(DE, contrast = contrast)
+	if (lfc_shrink_method %in% c("apeglm", "ashr")) {
+		shrunk <- switch(
+			lfc_shrink_method,
+			apeglm = {
+				coefs <- DESeq2::resultsNames(DE)
+				fwd <- paste0(contrast[1], "_", contrast[3], "_vs_", contrast[2])
+				rev <- paste0(contrast[1], "_", contrast[2], "_vs_", contrast[3])
+				if (fwd %in% coefs) {
+					s <- DESeq2::lfcShrink(DE, coef = fwd, type = "apeglm")
+					s$log2FoldChange <- -s$log2FoldChange # results() reports contrast[2] over contrast[3]
+					s
+				} else if (rev %in% coefs) {
+					DESeq2::lfcShrink(DE, coef = rev, type = "apeglm")
+				} else {
+					stop("apeglm shrinkage: no coefficient found for this contrast. Available: ",
+						paste(coefs, collapse = ", "))
+				}
+			},
+			ashr = DESeq2::lfcShrink(DE, contrast = contrast, type = "ashr")
+		)
+		res$log2FoldChange <- shrunk[rownames(res), "log2FoldChange"]
+	}
+
 	res$padj<- stats::p.adjust( res$pvalue , method = p_adjustment )   # NB: is "BH" by default, but can be overwritten if otherwise specified 
 	res = res[order(res$padj, na.last=NA), ]
 	res<-res[(res$padj < p_val ) & abs(res$log2FoldChange)> lfc ,]
