@@ -359,8 +359,12 @@ autoDAAldex2 <- function(
 	p_val,
 	eff_size = 0
 ) {
-	mm <- stats::model.matrix( stats::formula(design), metadata )
-	set.seed(1)
+  # Coerce metadata to a base data.frame immediately to satisfy stats::model.matrix()
+  metadata <- as.data.frame(metadata, stringsAsFactors = FALSE)
+  metadata <- metadata[phyloseq::sample_names(data), , drop = FALSE]
+
+  mm <- stats::model.matrix(stats::as.formula(design), data = metadata)
+  set.seed(1)
 	aldx <- ALDEx2::aldex.clr(
 		phyloseq::otu_table(data),
 		mm,
