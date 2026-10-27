@@ -35,7 +35,6 @@ CircoTaxAutoDA <- function(
 	remove_redundants= TRUE,
 	remove_results="" # to manually discard bad results
 ) {
-
 	# checking if the object in input is a phyloseq object
   if ( is.null(phyloseq::sample_names(data)) ){
     stop( "\n\n Looks like the object in input has no 'sample names'. \nPlease check if this object is a normal phyloseq object (containing otu table, tax table and sample data) ")
@@ -70,22 +69,25 @@ CircoTaxAutoDA <- function(
 		design <- paste("~",contrast[1])
 	}
 
-	if (tolower(mode[1]) == "aldex2") {
-		metadat <- as.data.frame(phyloseq::sample_data(data))
-		if( length( unique(metadat[[contrast[[1]]]]) ) > 2 ){ # if more than two levels in this column
-			metadat[[contrast[1]]] <- factor(
-				metadat[[contrast[1]]],
-				levels = c(
-					contrast[[2]],  # reference/base
-					contrast[[3]],  # higher level (target),
-					metadat[[contrast[1]]] [! metadat[[contrast[1]]] %in% c(contrast[[2]], contrast[[3]])]
-				)
-			)
-		}
-		if ( class(metadat[[contrast[1]]])!="factor" ){ # if it has only 2 levels it won't be coerced by the function above (if it is not already a factor by itself)
-			metadat[[contrast[1]]] <- factor(metadat[[contrast[1]]] , levels = c(contrast[[2]], contrast[[3]] ) )
-		}
-	}
+  if (tolower(mode[1]) == "aldex2") {
+    metadat <- data.frame(
+      lapply(
+				as.data.frame(as(phyloseq::sample_data(data), "data.frame")),
+        function(x) x
+			),
+      row.names = phyloseq::sample_names(data),
+      stringsAsFactors = FALSE,
+      check.names = FALSE
+    )
+    other_levels <- setdiff(
+			unique(as.character(metadat[[contrast[1]]])),
+      c(contrast[2], contrast[3])
+		)
+    metadat[[contrast[1]]] <- factor(
+      as.character(metadat[[contrast[1]]]),
+      levels = c(contrast[2], contrast[3], other_levels)
+    )
+  }
 	suppressWarnings({
 		rm(data_pruned, data.genus_pruned)
 		data_pruned <- phyloseq::prune_taxa(phyloseq::taxa_sums(data) > 10, data)
