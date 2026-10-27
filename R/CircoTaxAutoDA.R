@@ -124,7 +124,7 @@ CircoTaxAutoDA <- function(
 				contrast = contrast,
 				MCS = MCS,
 				p_adjustment = p_adjustment,
-				p_val = 1,
+				p_val = p_val,
 				eff_size = eff_size
 			)
 			# results<-row.names(res)
