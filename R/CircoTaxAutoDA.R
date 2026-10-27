@@ -33,7 +33,7 @@ CircoTaxAutoDA <- function(
 	lfc = 1, # log fold change (DESeq2)
 	lfc_shrink_method= "none",
 	remove_redundants= TRUE,
-	remove_results="" # to manually discard bad results
+	remove_results= NULL # to manually discard bad results
 ) {
 	# checking if the object in input is a phyloseq object
   if ( is.null(phyloseq::sample_names(data)) ){
@@ -230,8 +230,18 @@ CircoTaxAutoDA <- function(
 		auto_redund <- c()
   }
 
-	if(length(remove_results) > 1 & ! remove_results %in% as.vector(phyloseq::tax_table(data))) {
-		cat("\n Warning: the specified results to remove are not in the taxonomic table! \n\n")
+	# manually removed results: drop empty/NA entries, warn about names not in the taxonomy
+	remove_results <- as.character(remove_results)
+	remove_results <- remove_results[!is.na(remove_results) & nzchar(remove_results)]
+	if (length(remove_results) > 0) {
+		unknown_results <- setdiff(remove_results, as.vector(phyloseq::tax_table(data)))
+		if (length(unknown_results) > 0) {
+			warning(
+				"These results to remove are not in the taxonomic table: ",
+				paste(unknown_results, collapse = ", "),
+				call. = FALSE
+			)
+		}
 	}
  
 	auto_redund <- c(auto_redund, remove_results)
