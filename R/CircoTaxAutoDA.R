@@ -306,9 +306,15 @@ autoDACircoTaxDFMaker <- function(
 		#Res_tot2[,t]<-gsub("_"," ",Res_tot2[,t], fixed=T)
 	}
 
-	Res_tot3 <- data.frame(log2FC = Res_tot2[,2], padj = Res_tot2[,6]  ,Res_tot2[8:12])
+	lfc_col  <- if ("log2FoldChange" %in% colnames(Res_tot2)) "log2FoldChange" else "log2FC"
+  Res_tot3 <- data.frame(
+    log2FC = Res_tot2[[lfc_col]],
+    padj   = Res_tot2[["padj"]],
+    Res_tot2[, c("Phylum","Class","Order","Family","Genus")],
+    row.names = rownames(Res_tot2)
+  )
 
-	return(Res_tot3)
+  return(Res_tot3)
 }
 
 autoDADESeq2 <- function(
