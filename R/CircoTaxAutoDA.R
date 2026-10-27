@@ -4,8 +4,7 @@
 #' They then filter the significant results and generate a tsv table, ready to be displayed with CircoTax().
 #'
 #' @param data phyloseq input object
-#' @param contrast Vector of three characters which are (in this order) the names of the factor of interest and two of its levels of which report the differences. e.g. c("SEX","M","F")
-#' @param design String describing statistical design (within the limits of DESeq2 or ALDEx2) on which the analysis is conducted. e.g. '~ Gender+Condition'. Default: NULL
+#' @param contrast Character vector of length three: the name of the factor of interest and two of its levels, e.g. c("Condition","Healthy","Tumor"). Log fold changes are reported for the second level relative to the third in DESeq2 mode.#' @param design String describing statistical design (within the limits of DESeq2 or ALDEx2) on which the analysis is conducted. e.g. '~ Gender+Condition'. Default: NULL
 #' @param tax_out Vector whose characters are the taxonomic level to remove. Default: c()
 #' @param mode Differential Analysis method to be used, either "DESeq2" or "ALDEx2". Default: "DESeq2"
 #' @param MCS Monte-Carlo samples to generate during ALDEx2 computations. Default: 128.
@@ -40,13 +39,15 @@ CircoTaxAutoDA <- function(
     stop( "\n\n Looks like the object in input has no 'sample names'. \nPlease check if this object is a normal phyloseq object (containing otu table, tax table and sample data) ")
   }
 	# example of a proper contrast -->   contrast=c("Condition,Healthy,Tumor")
-  if(length(contrast) != 3 ){ # then if badly written or it does not exist
-    stop(paste(
-      "\n\n Please define a proper 'contrast' argument \n(  'Column_name_Factor','reference_Level','Level_B',   for example:  c('Condition','Healthy','Tumor')   )\n\n",
-      "You have the following column(s) available in your phyloseq sample data:",paste(colnames(phyloseq::sample_data(data)), collapse= "  "),"\n",
-      "\nEach one of the levels in the specified contrast has to be a row of the target factor column in the phyloseq sample data\n\n")
-    )
-  }
+	if (!is.character(contrast) || length(contrast) != 3 || anyNA(contrast)) {
+		stop(paste0(
+			"\n\n Please define a proper 'contrast' argument: a character vector of length 3,\n",
+			"c('Column_name_Factor', 'Level_1', 'Level_2'), for example: c('Condition', 'Healthy', 'Tumor')\n\n",
+			"You have the following column(s) available in your phyloseq sample data: ",
+			paste(colnames(phyloseq::sample_data(data)), collapse = "  "), "\n",
+			"Each of the two levels has to be a value of the target factor column in the phyloseq sample data\n\n"
+		), call. = FALSE)
+	}
 
 	if (is.character(phyloseq::sample_data(data)[[contrast[1]]])) {
     phyloseq::sample_data(data)[[contrast[1]]]<-as.factor(phyloseq::sample_data(data)[[contrast[1]]])
