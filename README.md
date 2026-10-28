@@ -110,7 +110,7 @@ CircoTax can also plot p-values as colored crown arcs:
 		fc_col = 8, 
 		pval_col = 7,
 		sort = "pval",
-    ramp2=c("grey","white"),
+		ramp2=c("grey","white"),
 		fill_text2="padj",
 		decrease_order = TRUE
 	)
