@@ -1,6 +1,6 @@
 # CircoTax
 CircoTax is an R function implementing a specialized `ggplot2` graph to represent in a radial form a rank-aware collection of differentially abundant taxa. Specifically, the CircoTax radial bar plot shows 6 or 7 sectors that encode the taxonomy depth (from kingdom to genus) and, departing from the center, a number of radial bars that reach the appropriate sector and whose color and transparency are proportional to the log fold change intensity and direction.
-A basic Quickstart guide is provided here, please refer to the Documentation for additional information and tutorials.
+A basic Quickstart guide is provided here, please refer to the [Documentation](https://github.com/matteoramazzotti/CircoTax/wiki) for additional information and tutorials.
 
 <p align="center">
 	<img src="docs/img/CircoTax_plot_default.png" width="49%"  title="CircoTax Plot obtained from a complete taxonomy matrix.">
