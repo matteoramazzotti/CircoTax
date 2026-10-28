@@ -18,13 +18,13 @@ CircoTaxAutoDA(
   lfc = 1,
   lfc_shrink_method = "none",
   remove_redundants = TRUE,
-  remove_results = ""
+  remove_results = NULL
 )
 }
 \arguments{
 \item{data}{phyloseq input object}
 
-\item{contrast}{Vector of three characters which are (in this order) the names of the factor of interest and two of its levels of which report the differences. e.g. c("SEX","M","F")}
+\item{contrast}{Character vector of length three: the name of the factor of interest and two of its levels, e.g. c("Condition","Healthy","Tumor"). Log fold changes are reported for the second level relative to the third in DESeq2 mode.#'}
 
 \item{design}{String describing statistical design (within the limits of DESeq2 or ALDEx2) on which the analysis is conducted. e.g. '~ Gender+Condition'. Default: NULL}
 
