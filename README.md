@@ -105,11 +105,13 @@ CircoTax can also plot p-values as colored crown arcs:
 	file_format_3 <- system.file("extdata", "circotax_example_3.txt", package = "circotax")
 	data = read.delim(file_format_3, sep = "\t")
 	CircoTax(
-		data,
+		data_f3,
 		tax_col = 9:14,
 		fc_col = 8, 
 		pval_col = 7,
 		sort = "pval",
+    ramp2=c("grey","white"),
+		fill_text2="padj",
 		decrease_order = TRUE
 	)
 ```
